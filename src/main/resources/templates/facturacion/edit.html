@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Factura</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Editar Factura</h2>
+
+    <form th:action="@{/facturacion/save}" method="post">
+        <input type="hidden" name="idfacturacion" th:value="${facturacion.idfacturacion}">
+
+        <div class="mb-3">
+            <label class="form-label">Paciente</label>
+            <select class="form-select" name="paciente.idpaciente">
+                <option th:each="paciente : ${pacientes}"
+                        th:value="${paciente.idpaciente}"
+                        th:text="${paciente.nombresapellidos}"
+                        th:selected="${facturacion.paciente != null && facturacion.paciente.idpaciente == paciente.idpaciente}">
+                </option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Encargado</label>
+            <select class="form-select" name="administrativo.idadministrativo">
+                <option th:each="admin : ${administrativos}"
+                        th:value="${admin.idadministrativo}"
+                        th:text="${admin.nombresapellidos}"
+                        th:selected="${facturacion.administrativo != null && facturacion.administrativo.idadministrativo == admin.idadministrativo}">
+                </option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Fecha</label>
+            <!-- SOLUCIÓN: Usa el valor directo sin formatear -->
+            <input type="date" class="form-control" name="fechafacturacion"
+                   th:value="${facturacion.fechafacturacion}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Monto</label>
+            <input type="number" class="form-control" name="monto" step="0.01" th:value="${facturacion.monto}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <select class="form-select" name="estadopago">
+                <option value="Pagado" th:selected="${facturacion.estadopago == 'Pagado'}">Pagado</option>
+                <option value="Pendiente" th:selected="${facturacion.estadopago == 'Pendiente'}">Pendiente</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a th:href="@{/facturacion}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+</body>
+</html>

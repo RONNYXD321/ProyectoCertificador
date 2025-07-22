@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica - Detalles de Receta</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/home">Clínica Salud+</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item"><a class="nav-link" href="/paciente">Pacientes</a></li>
+                <li class="nav-item"><a class="nav-link" href="/cita">Citas</a></li>
+                <li class="nav-item"><a class="nav-link" href="/medico">Médicos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/facturacion">Facturación</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/administrativo">Administrativo</a></li>
+                <li class="nav-item"><a class="nav-link" href="/detalle">Detalles</a></li>
+                <li class="nav-item"><a class="nav-link" href="/especialidad">Especialidad</a></li>
+                <li class="nav-item"><a class="nav-link" href="/recetaMedica">Receta Médica</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary">Detalles de Receta</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">Información del Detalle</div>
+        <div class="card-body">
+            <form th:action="@{/detalle/save}" method="post">
+                <input type="hidden" th:value="${detalle.iddetalle}" name="iddetalle">
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="receta" class="form-label">Receta Médica</label>
+                        <select class="form-select" id="receta" name="receta.idreceta" required>
+                            <option value="">Seleccione receta</option>
+                            <option th:each="receta : ${recetas}"
+                                    th:value="${receta.idreceta}"
+                                    th:text="'Receta #' + ${receta.idreceta} + ' - ' + ${receta.fechareceta}"
+                                    th:selected="${detalle.receta != null && detalle.receta.idreceta == receta.idreceta}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="medicamento" class="form-label">Medicamento</label>
+                        <select class="form-select" id="medicamento" name="medicamento.idmedicamento" required>
+                            <option value="">Seleccione medicamento</option>
+                            <option th:each="medicamento : ${medicamentos}"
+                                    th:value="${medicamento.idmedicamento}"
+                                    th:text="${medicamento.nombremedicamento} + ' (' + ${medicamento.tipo} + ')'"
+                                    th:selected="${detalle.medicamento != null && detalle.medicamento.idmedicamento == medicamento.idmedicamento}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="cantidad" class="form-label">Cantidad</label>
+                        <input type="number" class="form-control" id="cantidad" th:value="${detalle.cantidad}" name="cantidad" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="unidad" class="form-label">Unidad</label>
+                        <select class="form-select" id="unidad" name="unidad">
+                            <option value="1" th:selected="${detalle.unidad == 1}">Unidades</option>
+                            <option value="2" th:selected="${detalle.unidad == 2}">Miligramos</option>
+                            <option value="3" th:selected="${detalle.unidad == 3}">Mililitros</option>
+                            <option value="4" th:selected="${detalle.unidad == 4}">Gramos</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="dosis" class="form-label">Dosis</label>
+                        <input type="text" class="form-control" id="dosis" th:value="${detalle.dosis}" name="dosis">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="instrucciones" class="form-label">Instrucciones</label>
+                    <textarea class="form-control" id="instrucciones" name="instrucciones" rows="3" th:text="${detalle.instrucciones}"></textarea>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="reset" class="btn btn-secondary">Limpiar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-primary text-white text-center">Lista de Detalles</div>
+        <div class="card-body">
+            <table class="table table-bordered text-center">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Receta</th>
+                    <th>Medicamento</th>
+                    <th>Cantidad</th>
+                    <th>Unidad</th>
+                    <th>Dosis</th>
+                    <th>Instrucciones</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="detalle : ${detalles}">
+                    <td th:text="${detalle.iddetalle}"></td>
+                    <td th:text="'Receta #' + ${detalle.receta.idreceta}"></td>
+                    <td th:text="${detalle.medicamento.nombremedicamento}"></td>
+                    <td th:text="${detalle.cantidad}"></td>
+                    <td>
+                <span th:switch="${detalle.unidad}">
+                    <span th:case="1">Unid.</span>
+                    <span th:case="2">mg</span>
+                    <span th:case="3">ml</span>
+                    <span th:case="4">g</span>
+                    <span th:case="*">-</span>
+                </span>
+                    </td>
+                    <td th:text="${detalle.dosis} ?: '-'"></td>
+                    <td th:text="${detalle.instrucciones} ?: '-'"
+                        style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        th:attr="title=${detalle.instrucciones}"></td>
+                    <td>
+                        <a th:href="@{/detalle/edit/} + ${detalle.iddetalle}" class="btn btn-warning btn-sm">Editar</a>
+                        <form th:action="@{/detalle/delete/} + ${detalle.iddetalle}" method="post" style="display: inline-block;">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('¿Estás seguro de eliminar este detalle?');">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Médico</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<!-- Aquí deberías incluir tu barra de navegación -->
+
+<div class="container mt-5">
+
+  <!-- ✅ Mensaje de éxito (si se envía desde el controlador) -->
+  <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
+    <span th:text="${mensajeExito}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
+  <!-- ❌ Mensaje de error opcional -->
+  <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <span th:text="${error}"></span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
+  <h2 class="text-center text-primary mt-4">Editar Médico</h2>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white text-center">Modificar Datos</div>
+    <div class="card-body">
+      <form th:action="@{/medico/update/{id}(id=${medico.idmedico})}" th:object="${medico}" method="post">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">DNI</label>
+            <input type="number" class="form-control" th:field="*{dnimedico}" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Nombres y Apellidos</label>
+            <input type="text" class="form-control" th:field="*{nombresapellidos}" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Especialidad</label>
+            <select class="form-select" th:field="*{especialidad.idespecialidad}">
+              <option th:each="especialidad : ${especialidades}"
+                      th:value="${especialidad.idespecialidad}"
+                      th:text="${especialidad.nombreespecialidad}"
+                      th:selected="${especialidad.idespecialidad == medico.especialidad.idespecialidad}">
+              </option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Teléfono</label>
+            <input type="tel" class="form-control" th:field="*{telefono}" required>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Correo Electrónico</label>
+          <input type="email" class="form-control" th:field="*{correo}" required>
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+          <a th:href="@{/medico}" class="btn btn-secondary">Volver</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

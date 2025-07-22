@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pacientes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/home">Clínica Salud+</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/paciente">Pacientes</a></li>
+                <li class="nav-item"><a class="nav-link" href="/cita">Citas</a></li>
+                <li class="nav-item"><a class="nav-link" href="/medico">Médicos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/facturacion">Facturación</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/administrativo">Administrativo</a></li>
+                <li class="nav-item"><a class="nav-link" href="/detalle">Detalles</a></li>
+                <li class="nav-item"><a class="nav-link" href="/especialidad">Especialidad</a></li>
+                <li class="nav-item"><a class="nav-link" href="/recetaMedica">Receta Médica</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary">Gestión de Pacientes</h2>
+
+    <!-- ✅ Mensaje de error -->
+    <div th:if="${errorMensaje}" class="alert alert-danger text-center" role="alert">
+        <span th:text="${errorMensaje}"></span>
+    </div>
+
+    <!-- Formulario de Registro -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">Registrar Paciente</div>
+        <div class="card-body">
+            <form th:action="@{/paciente/save}" method="post">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="dnipaciente" class="form-label">DNI</label>
+                        <input type="number" class="form-control" id="dnipaciente" name="dnipaciente" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="nombresapellidos" class="form-label">Nombres y Apellidos</label>
+                        <input type="text" class="form-control" id="nombresapellidos" name="nombresapellidos" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="fechanacimiento" class="form-label">Fecha Nacimiento</label>
+                        <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="telefono" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefono" name="telefono" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="correo" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="correo" name="correo" required>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="reset" class="btn btn-secondary">Limpiar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lista de Pacientes -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-primary text-white text-center">Pacientes Registrados</div>
+        <div class="card-body">
+            <table class="table table-bordered text-center">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>DNI</th>
+                    <th>Nombre</th>
+                    <th>Fecha Nac.</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="paciente : ${pacientes}">
+                    <td th:text="${paciente.idpaciente}"></td>
+                    <td th:text="${paciente.dnipaciente}"></td>
+                    <td th:text="${paciente.nombresapellidos}"></td>
+                    <td th:text="${paciente.fechanacimiento != null} ? ${#temporals.format(paciente.fechanacimiento, 'dd/MM/yyyy')} : ''"></td>
+                    <td th:text="${paciente.telefono}"></td>
+                    <td>
+                        <a th:href="@{/paciente/edit/{id}(id=${paciente.idpaciente})}" class="btn btn-warning">Editar</a>
+                        <form th:action="@{/paciente/delete/{id}(id=${paciente.idpaciente})}" method="post" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este paciente?');">
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

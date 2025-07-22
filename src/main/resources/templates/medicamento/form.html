@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${medicamento.idmedicamento} ? 'Editar Medicamento' : 'Nuevo Medicamento'"></title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+  <h2 class="text-center" th:text="${medicamento.idmedicamento} ? 'Editar Medicamento' : 'Nuevo Medicamento'"></h2>
+  <div class="card shadow">
+    <div class="card-body">
+      <form th:action="${medicamento.idmedicamento} ? @{/medicamento/edit/{id}(id=${medicamento.idmedicamento})} : @{/medicamento/save}"
+            th:object="${medicamento}"
+            method="post">
+
+        <input type="hidden" th:field="*{idmedicamento}">
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Nombre</label>
+            <input type="text" class="form-control" th:field="*{nombremedicamento}" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Tipo</label>
+            <input type="text" class="form-control" th:field="*{tipo}" required>
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" th:field="*{descripcion}" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">
+            <span th:text="${medicamento.idmedicamento} ? 'Guardar Cambios' : 'Guardar'"></span>
+          </button>
+          <a th:href="@{/medicamento}" class="btn btn-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

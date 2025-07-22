@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica - Facturación</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<!-- Barra de navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/home">Clínica Salud+</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item"><a class="nav-link" href="/paciente">Pacientes</a></li>
+                <li class="nav-item"><a class="nav-link" href="/cita">Citas</a></li>
+                <li class="nav-item"><a class="nav-link" href="/medico">Médicos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/facturacion">Facturación</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/administrativo">Administrativo</a></li>
+                <li class="nav-item"><a class="nav-link" href="/detalle">Detalles</a></li>
+                <li class="nav-item"><a class="nav-link" href="/especialidad">Especialidad</a></li>
+                <li class="nav-item"><a class="nav-link" href="/recetaMedica">Receta Médica</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Sección principal -->
+<div class="container mt-5">
+    <h2 class="text-center text-primary">Facturación</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">Información</div>
+        <div class="card-body">
+            <form th:action="@{/facturacion/save}" method="post">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="idfacturacion" class="form-label">ID Facturación</label>
+                        <input type="text" class="form-control" id="idfacturacion" name="idfacturacion" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="paciente" class="form-label">A nombre</label>
+                        <select class="form-select" id="paciente" name="paciente.idpaciente" required>
+                            <option value="">Seleccione un paciente</option>
+                            <option th:each="paciente : ${pacientes}"
+                                    th:value="${paciente.idpaciente}"
+                                    th:text="${paciente.nombresapellidos}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="administrativo" class="form-label">Encargado</label>
+                        <select class="form-select" id="administrativo" name="administrativo.idadministrativo" required>
+                            <option value="">Seleccione un encargado</option>
+                            <option th:each="administrativo : ${administrativos}"
+                                    th:value="${administrativo.idadministrativo}"
+                                    th:text="${administrativo.nombresapellidos}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="fechafacturacion" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="fechafacturacion" name="fechafacturacion" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="monto" class="form-label">Monto</label>
+                        <input type="number" class="form-control" id="monto" name="monto" step="0.01" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="estadopago" class="form-label">Estado de Pago</label>
+                        <select class="form-select" id="estadopago" name="estadopago" required>
+                            <option value="Pagado">Pagado</option>
+                            <option value="Pendiente">Pendiente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="reset" class="btn btn-secondary">Limpiar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de descripción -->
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-primary text-white text-center">Descripción</div>
+        <div class="card-body">
+            <table class="table table-bordered text-center">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Paciente</th>
+                    <th>Encargado</th>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="factura : ${facturas}">
+                    <td th:text="${factura.idfacturacion}"></td>
+                    <td th:text="${factura.paciente != null ? factura.paciente.nombresapellidos : 'Sin paciente'}"></td>
+                    <td th:text="${factura.administrativo != null ? factura.administrativo.nombresapellidos : 'Sin encargado'}"></td>
+                    <td th:text="${factura.fechafacturacion}"></td>
+                    <td th:text="${factura.monto}"></td>
+                    <td th:text="${factura.estadopago}"></td>
+                    <td>
+                        <!-- Botón Editar -->
+                        <a th:href="@{/facturacion/edit/} + ${factura.idfacturacion}"
+                           class="btn btn-warning btn-sm">Editar</a>
+
+                        <form th:action="@{/facturacion/delete/} + ${factura.idfacturacion}"
+                              method="post"
+                              style="display: inline-block;">
+                            <button type="submit"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('¿Estás seguro de eliminar esta factura?');">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts de Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Historia Médica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="text-center">Editar Historia Médica</h2>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form th:action="@{/historia/save}" th:object="${historia}" method="post">
+                <input type="hidden" th:field="*{idhistoria}"/>
+
+                <div class="mb-3">
+                    <label class="form-label">Diagnóstico</label>
+                    <input type="text" class="form-control" th:field="*{diagnostico}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Fecha</label>
+                    <input type="text" class="form-control" th:field="*{fecha}" placeholder="YYYY-MM-DD" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tratamiento</label>
+                    <input type="text" class="form-control" th:field="*{tratamiento}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Paciente</label>
+                    <select class="form-select" th:field="*{paciente.idpaciente}">
+                        <option value="">-- Seleccione paciente --</option>
+                        <option th:each="paciente : ${pacientes}"
+                                th:value="${paciente.idpaciente}"
+                                th:text="${paciente.nombresapellidos}"
+                                th:selected="${historia.paciente != null && historia.paciente.idpaciente == paciente.idpaciente}">
+                        </option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+                <a href="/historia" class="btn btn-secondary ms-2">Volver</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
