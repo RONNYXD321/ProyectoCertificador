@@ -79,7 +79,7 @@ public class MedicoController {
             medicoService.eliminarMedico(id);
             redirectAttributes.addFlashAttribute("success", "Médico eliminado correctamente.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar");
+            redirectAttributes.addFlashAttribute("error", "no puede ser eliminado por tener registros relacionados.");
         }
         return "redirect:/medico";
     }
